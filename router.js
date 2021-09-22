@@ -7,10 +7,12 @@ function toTitleCase(str) {
 }
 
 const getItems = async (req, res, next) => {
-  // const { dataValues } = await Item.findAll();
-  console.log("res", res);
-  const items = await Item.findAll();
-  res.json({ data: items });
+  try {
+    const items = await Item.findAll();
+    res.status(200).json({ data: items });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 };
 
 const newItem = async (req, res, next) => {
@@ -47,8 +49,19 @@ const editItem = async (req, res, next) => {
   }
 };
 
-const deleteItem = (req, res, next) => {
+const deleteItem = async (req, res, next) => {
   console.log("body", req.body);
+  const { itemId } = req.body;
+  try {
+    const deleteItem = await Item.destroy({
+      where: {
+        itemId,
+      },
+      returning: true,
+      plain: true,
+    });
+    res.status(200).json({ data: deleteItem });
+  } catch (error) {}
 };
 
 module.exports = app => {
