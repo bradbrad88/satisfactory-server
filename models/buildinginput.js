@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class recipe extends Model {
+  class BuildingInput extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,27 +9,31 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.belongsToMany(models.Item, {through: 'ItemRecipes'})
-      // console.log(models);
     }
   }
-  recipe.init(
+  BuildingInput.init(
     {
-      recipeName: { type: DataTypes.STRING, allowNull: false },
-      alt: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+      buildingInputId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       building: {
         type: DataTypes.INTEGER,
         references: {
           model: "Buildings",
           key: "buildingId",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
       },
+      direction: DataTypes.STRING,
+      type: DataTypes.STRING,
+      amount: DataTypes.INTEGER,
     },
     {
       sequelize,
-      modelName: "recipe",
+      modelName: "BuildingInput",
     }
   );
-  return recipe;
+  return BuildingInput;
 };
