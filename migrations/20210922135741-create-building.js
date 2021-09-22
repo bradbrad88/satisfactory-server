@@ -24,25 +24,9 @@ module.exports = {
           type: Sequelize.DATE,
         },
       }),
-      queryInterface.removeColumn("Recipes", "building"),
-      queryInterface.addColumn("Recipes", "building", {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Buildings",
-          key: "buildingId",
-        },
-        onDelete: "set null",
-      }),
     ]);
   },
   down: async (queryInterface, Sequelize) => {
-    await Promise.all([
-      queryInterface.removeColumn("Recipes", "building"),
-      queryInterface.addColumn("Recipes", "building", {
-        type: Sequelize.STRING,
-        allowNull: false,
-      }),
-      queryInterface.dropTable("Buildings"),
-    ]);
+    await Promise.all([queryInterface.dropTable("Buildings")]);
   },
 };
