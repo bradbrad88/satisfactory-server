@@ -14,14 +14,8 @@ app.use(express.json());
 app.use(cors(corsOptions));
 router(app);
 
-const port = parseInt(process.env.PORT) || 5000;
+const port = parseInt(process.env.PORT) || 5001;
 
 app.listen(port);
 
 console.log("App listening on port", port);
-
-// const models = require('./models')
-
-// const items = models.Item.findAll()
-
-// console.log('Items', items);

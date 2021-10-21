@@ -15,7 +15,7 @@ module.exports = {
             model: "Buildings",
             key: "buildingId",
           },
-          onDelete: "SET NULL",
+          onDelete: "CASCADE",
         },
         direction: {
           type: Sequelize.STRING,
@@ -45,7 +45,7 @@ module.exports = {
           model: "Buildings",
           key: "buildingId",
         },
-        onDelete: "set null",
+        onDelete: "SET NULL",
       }),
     ]);
   },

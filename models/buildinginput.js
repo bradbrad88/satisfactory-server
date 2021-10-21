@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Buildings, {
+        foreignKey: "building",
+        targetKey: "buildingId",
+      });
     }
   }
   BuildingInput.init(
@@ -32,7 +36,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "BuildingInput",
+      modelName: "BuildingInputs",
+      freezeTableName: true,
     }
   );
   return BuildingInput;
