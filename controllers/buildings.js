@@ -13,6 +13,20 @@ const example = {
   ],
 };
 
+exports.getBuilding = async (req, res, next) => {
+  try {
+    const { buildingId } = req.params;
+    const building = await Buildings.findByPk(buildingId, {
+      include: {
+        model: BuildingInputs,
+        attributes: ["direction", "type", "amount"],
+      },
+    });
+    console.log("building", building);
+    res.status(200).json({ data: building });
+  } catch (error) {}
+};
+
 exports.getBuildings = async (req, res, next) => {
   try {
     const buildings = await Buildings.findAll({
@@ -28,7 +42,8 @@ exports.getBuildings = async (req, res, next) => {
 
 exports.newBuilding = async (req, res, next) => {
   try {
-    const result = await Buildings.create(req.body, {
+    const newBuilding = { ...req.body, title: toTitleCase(req.body.title) };
+    const result = await Buildings.create(newBuilding, {
       include: [
         {
           association: Buildings.BuildingInputs,
@@ -43,23 +58,25 @@ exports.newBuilding = async (req, res, next) => {
 
 exports.editBuilding = async (req, res, next) => {
   try {
-    const newBuilding = req.body;
-    const id = newBuilding.buildingId;
+    const editBuilding = { ...req.body, title: toTitleCase(req.body.title) };
+    const id = editBuilding.buildingId;
     const success = await BuildingInputs.destroy({
       where: {
         building: id,
       },
     });
-    console.log("success", success);
-    const result = await Buildings.update(req.body, {
+
+    const result = await Buildings.update(editBuilding, {
       where: { buildingId: id },
     });
-    const buildingInputs = newBuilding.BuildingInputs.map(input => ({
+    const buildingInputs = editBuilding.BuildingInputs.map(input => ({
       ...input,
       building: id,
     }));
     await BuildingInputs.bulkCreate(buildingInputs);
-    res.json(result);
+    console.log("result", result);
+    if (result[0] === 1) return res.status(201).json({ data: editBuilding });
+    res.status(500).json({ error: "Update unsuccessful" });
   } catch (error) {
     console.log(error);
     res.status(400).json(error);
@@ -74,10 +91,9 @@ exports.deleteBuilding = async (req, res, next) => {
         buildingId,
       },
     });
-    console.log("result", result);
     if (result === 1) return res.status(200).json({ success: true });
     res.status(404).json({ success: false });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(500).json({ error });
   }
 };

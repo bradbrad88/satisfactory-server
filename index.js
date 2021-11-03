@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(cors(corsOptions));
 router(app);
 
-const port = parseInt(process.env.PORT) || 5001;
+const port = parseInt(process.env.PORT) || 5000;
 
 app.listen(port);
 

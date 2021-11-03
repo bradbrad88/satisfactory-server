@@ -20,7 +20,7 @@ module.exports = {
           model: "Recipes",
           key: "recipeId",
         },
-        onDelete: "restrict",
+        onDelete: "cascade",
       },
       itemId: {
         type: Sequelize.INTEGER,

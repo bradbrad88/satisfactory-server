@@ -8,7 +8,17 @@ function toTitleCase(str) {
 
 exports.getItems = async (req, res, next) => {
   try {
-    const result = await Items.findAll();
+    const result = await Items.findAll({
+      attributes: [
+        "itemId",
+        "itemName",
+        "stackSize",
+        "points",
+        "category",
+        "transportType",
+      ],
+    });
+    // console.log("result", result);
     res.status(200).json({ data: result });
   } catch (error) {
     res.status(400).json({ error });
@@ -19,6 +29,7 @@ exports.newItem = async (req, res, next) => {
   try {
     const titleCaseName = toTitleCase(req.body.itemName);
     const newItem = { ...req.body, itemName: titleCaseName };
+    console.log("new item", newItem);
     const result = await Items.create(newItem);
     res.status(201).json({ data: result });
   } catch (error) {
@@ -28,14 +39,12 @@ exports.newItem = async (req, res, next) => {
 };
 
 exports.editItem = async (req, res, next) => {
-  const { itemId, itemName, category, stackSize, points } = req.body;
   try {
-    const titleCaseName = toTitleCase(itemName);
-    const editItem = await Items.update(
-      { itemName: titleCaseName, category, stackSize, points },
-      { where: { itemId }, returning: true, plain: true }
-    );
-    res.status(201).json({ data: editItem });
+    const editItem = { ...req.body, itemName: toTitleCase(req.body.itemName) };
+    const id = editItem.itemId;
+    const result = await Items.update(editItem, { where: { itemId: id } });
+    if (result[0] === 1) return res.status(201).json({ data: editItem });
+    res.status(500).json({ error: "Update unsuccessful" });
   } catch (error) {
     console.error("Error updating item in database", error);
     res.status(400).json({ error });
@@ -43,16 +52,16 @@ exports.editItem = async (req, res, next) => {
 };
 
 exports.deleteItem = async (req, res, next) => {
-  console.log("body", req.body);
-  const { itemId } = req.body;
   try {
-    const deleteItem = await Items.destroy({
+    const { itemId } = req.body;
+    const result = await Items.destroy({
       where: {
         itemId,
       },
-      returning: true,
-      plain: true,
     });
-    res.status(200).json({ data: deleteItem });
-  } catch (error) {}
+    if (result === 1) return res.status(200).json({ success: true });
+    res.status(404).json({ success: false });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };

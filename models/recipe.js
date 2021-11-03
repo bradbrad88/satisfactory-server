@@ -8,17 +8,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      // this.belongsToMany(models.Item, {through: 'ItemRecipes'})
-      console.log(models);
       this.Buildings = this.belongsTo(models.Buildings, {
         foreignKey: "building",
       });
-      // this.Items = this.belongsToMany(models.Items, {
-      //   through: "ItemRecipes",
-      //   uniqueKey: "recipeId",
-      // });
-      this.ItemRecipes = this.hasMany(models.ItemRecipes, {
+      this.RecipeItems = this.hasMany(models.RecipeItems, {
         foreignKey: "recipeId",
       });
     }
@@ -31,14 +24,18 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       recipeName: { type: DataTypes.STRING, allowNull: false },
-      alt: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+      // alt: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+      category: {
+        type: DataTypes.STRING,
+        validate: { isIn: [["standard", "alt recipe"]] },
+      },
       building: {
         type: DataTypes.INTEGER,
         references: {
           model: "Buildings",
           key: "buildingId",
         },
-        onDelete: "SET NULL",
+        onDelete: "RESTRICT",
       },
     },
     {
