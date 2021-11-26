@@ -1,6 +1,7 @@
 const Items = require("./controllers/items");
 const Buildings = require("./controllers/buildings");
 const Recipes = require("./controllers/recipes");
+const Data = require("./controllers/data");
 
 module.exports = app => {
   app.get("/items", Items.getItems);
@@ -19,4 +20,6 @@ module.exports = app => {
   app.post("/recipe/new", Recipes.newRecipe);
   app.put("/recipe/edit", Recipes.editRecipe);
   app.delete("/recipe/delete", Recipes.deleteRecipe);
+
+  app.get("/", Data.getData);
 };

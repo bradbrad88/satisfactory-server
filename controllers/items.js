@@ -16,6 +16,7 @@ exports.getItems = async (req, res, next) => {
         "points",
         "category",
         "transportType",
+        "rawMaterial",
       ],
     });
     // console.log("result", result);
@@ -41,6 +42,7 @@ exports.newItem = async (req, res, next) => {
 exports.editItem = async (req, res, next) => {
   try {
     const editItem = { ...req.body, itemName: toTitleCase(req.body.itemName) };
+    console.log("edit item", editItem);
     const id = editItem.itemId;
     const result = await Items.update(editItem, { where: { itemId: id } });
     if (result[0] === 1) return res.status(201).json({ data: editItem });

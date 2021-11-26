@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.Buildings = this.belongsTo(models.Buildings, {
-        foreignKey: "building",
+        foreignKey: "buildingId",
+        as: "building",
       });
       this.RecipeItems = this.hasMany(models.RecipeItems, {
         foreignKey: "recipeId",
@@ -29,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         validate: { isIn: [["standard", "alt recipe"]] },
       },
-      building: {
+      buildingId: {
         type: DataTypes.INTEGER,
         references: {
           model: "Buildings",

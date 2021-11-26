@@ -14,7 +14,7 @@ const flattenItem = itemRecipe => {
 exports.getRecipes = async (req, res, next) => {
   try {
     const result = await Recipes.findAll({
-      attributes: ["recipeId", "recipeName", "category", "building"],
+      attributes: ["recipeId", "recipeName", "category", "buildingId"],
       include: [
         // {
         //   model: Buildings,
